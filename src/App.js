@@ -2,34 +2,59 @@ import React, { useState, useEffect } from 'react';
 
 import loginService from './services/login';
 import blogService from './services/blogs';
+
 import Notification from './components/Notification';
 import LoginForm from './components/LoginForm';
+import BlogForm from './components/BlogForm';
 import Blog from './components/Blog';
 
 function App() {
   const [blogs, setBlogs] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
+  const [notification, setNotification] = useState({ message: null });
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
+  const fetchBlogs = async () => {
+    const blogs = await blogService.getAll();
+    setBlogs(blogs);
+  };
+
   useEffect(() => {
-    const func = async () => {
-      const blogs = await blogService.getAll();
-      console.log(blogs);
-      setBlogs(blogs);
-    };
-    func();
+    fetchBlogs();
   }, []);
 
   useEffect(() => {
     const loggedUserJson = window.localStorage.getItem('loggedBlogappUser');
     if (loggedUserJson) {
       const user = JSON.parse(loggedUserJson);
-      console.log(user);
       setUser(user);
+      blogService.setToken(user.token);
     }
   }, []);
+
+  const handleBlogCreation = async event => {
+    event.preventDefault();
+    try {
+      await blogService.createBlog({ title, author, url });
+      fetchBlogs();
+
+      setNotification({ message: `a new blog ${title} by ${author} added` });
+
+      setTitle('');
+      setAuthor('');
+      setUrl('');
+    } catch (exception) {
+      setNotification({ message: 'Error creating new Blog', type: 'error' });
+    } finally {
+      setTimeout(() => {
+        setNotification({ message: null });
+      }, 3000);
+    }
+  };
 
   const handleLogin = async event => {
     event.preventDefault();
@@ -40,15 +65,17 @@ function App() {
       });
 
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user));
+      blogService.setToken(user.token);
       setUser(user);
-    } catch (exception) {
-      setErrorMessage('Wrong credentials');
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-    } finally {
+
       setUsername('');
       setPassword('');
+    } catch (exception) {
+      setNotification({ message: 'Wrong credentials', type: 'error' });
+    } finally {
+      setTimeout(() => {
+        setNotification({ message: null });
+      }, 3000);
     }
   };
 
@@ -66,7 +93,7 @@ function App() {
 
   return (
     <div>
-      <Notification message={errorMessage} />
+      <Notification notification={notification} />
 
       {user === null ? (
         <div>
@@ -75,15 +102,27 @@ function App() {
             handleLogin={handleLogin}
             username={username}
             password={password}
-            handleUsername={value => setUsername(value)}
-            handlePassword={value => setPassword(value)}
+            handleUsernameChange={value => setUsername(value)}
+            handlePasswordChange={value => setPassword(value)}
           />
         </div>
       ) : (
         <div>
           <h2>Blogs</h2>
-          <p>{user.name} logged in</p>
-          <button onClick={handleLogout}>Logout</button>
+          <p>
+            {user.name} logged in <button onClick={handleLogout}>Logout</button>
+          </p>
+
+          <BlogForm
+            handleBlogCreation={handleBlogCreation}
+            title={title}
+            author={author}
+            url={url}
+            handleTitleChange={value => setTitle(value)}
+            handleAuthorChange={value => setAuthor(value)}
+            handleUrlChange={value => setUrl(value)}
+          />
+
           {allBlogs()}
         </div>
       )}
