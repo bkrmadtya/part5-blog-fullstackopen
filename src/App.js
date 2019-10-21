@@ -39,7 +39,7 @@ function App() {
     }
   }, []);
 
-  const handleBlogCreation = async event => {
+  const handleCreateBlog = async event => {
     event.preventDefault();
     blogFormRef.current.toggleVisibility();
 
@@ -66,6 +66,21 @@ function App() {
       const updatedBlog = await blogService.updateBlog(blogToUpdate);
 
       setNotification({ message: `${updatedBlog.title} updated` });
+    } catch (exception) {
+      setNotification({ message: `Error updating`, type: 'error' });
+    } finally {
+      setTimeout(() => {
+        setNotification({ message: null });
+      }, 3000);
+    }
+  };
+
+  const handleDeleteBlog = async blog => {
+    try {
+      await blogService.deleteBlog(blog);
+      fetchBlogs();
+
+      setNotification({ message: `${blog.title} deleted` });
     } catch (exception) {
       setNotification({ message: `Error updating`, type: 'error' });
     } finally {
@@ -107,8 +122,23 @@ function App() {
     // const usersBlog = blogs.filter(
     //   blog => blog.user.username === user.username
     // );
-    return blogs.map(blog => (
-      <Blog key={blog.id} blog={blog} updateBlog={handleBlogUpdate} />
+    const sortedBlog = blogs.sort((blog1, blog2) => {
+      if (blog1.likes === blog2.likes) {
+        return 0;
+      }
+      return blog1.likes < blog2.likes ? 1 : -1;
+    });
+
+    return sortedBlog.map(blog => (
+      <Blog
+        key={blog.id}
+        blog={blog}
+        updateBlog={handleBlogUpdate}
+        deleteBlog={handleDeleteBlog}
+        blogCreator={(() =>
+          blog.user.username === user.username &&
+          blog.user.name === user.name)()}
+      />
     ));
   };
 
@@ -136,7 +166,7 @@ function App() {
 
           <Toggleable buttonLabel="new blog" ref={blogFormRef}>
             <BlogForm
-              handleBlogCreation={handleBlogCreation}
+              handleCreateBlog={handleCreateBlog}
               title={title}
               author={author}
               url={url}

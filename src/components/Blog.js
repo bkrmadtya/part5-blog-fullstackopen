@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-const Blog = ({ blog, updateBlog }) => {
-  const [showDetails, setShowDetails] = useState(false);
+const Blog = ({ blog, updateBlog, deleteBlog, blogCreator }) => {
+  const [showDetails, setShowDetails] = useState(true);
 
   const toggleDetails = () => {
     setShowDetails(!showDetails);
@@ -20,6 +20,29 @@ const Blog = ({ blog, updateBlog }) => {
     updateBlog(blog);
   };
 
+  const enableRemoveIfCreator = () => {
+    if (blogCreator) {
+      return (
+        <div>
+          <button
+            onClick={() => {
+              const confirmDelete = window.confirm(
+                `Remove blog ${blog.title} by ${blog.author}`
+              );
+
+              confirmDelete && deleteBlog(blog);
+            }}
+          >
+            Remove
+          </button>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  enableRemoveIfCreator();
+
   return (
     <div style={blogStyle}>
       <div onClick={toggleDetails}>
@@ -37,6 +60,7 @@ const Blog = ({ blog, updateBlog }) => {
             <button onClick={likeBlog}>like</button>
           </div>
           <div>added by {blog.user.username}</div>
+          {enableRemoveIfCreator()}
         </div>
       )}
     </div>
