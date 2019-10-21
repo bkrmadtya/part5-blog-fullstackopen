@@ -7,6 +7,7 @@ import Notification from './components/Notification';
 import LoginForm from './components/LoginForm';
 import BlogForm from './components/BlogForm';
 import Blog from './components/Blog';
+import Toggleable from './components/Toggleable';
 
 function App() {
   const [blogs, setBlogs] = useState([]);
@@ -17,6 +18,8 @@ function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+
+  const blogFormRef = React.createRef();
 
   const fetchBlogs = async () => {
     const blogs = await blogService.getAll();
@@ -38,6 +41,8 @@ function App() {
 
   const handleBlogCreation = async event => {
     event.preventDefault();
+    blogFormRef.current.toggleVisibility();
+
     try {
       await blogService.createBlog({ title, author, url });
       fetchBlogs();
@@ -113,15 +118,17 @@ function App() {
             {user.name} logged in <button onClick={handleLogout}>Logout</button>
           </p>
 
-          <BlogForm
-            handleBlogCreation={handleBlogCreation}
-            title={title}
-            author={author}
-            url={url}
-            handleTitleChange={value => setTitle(value)}
-            handleAuthorChange={value => setAuthor(value)}
-            handleUrlChange={value => setUrl(value)}
-          />
+          <Toggleable buttonLabel="new blog" ref={blogFormRef}>
+            <BlogForm
+              handleBlogCreation={handleBlogCreation}
+              title={title}
+              author={author}
+              url={url}
+              handleTitleChange={value => setTitle(value)}
+              handleAuthorChange={value => setAuthor(value)}
+              handleUrlChange={value => setUrl(value)}
+            />
+          </Toggleable>
 
           {allBlogs()}
         </div>
