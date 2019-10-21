@@ -61,6 +61,20 @@ function App() {
     }
   };
 
+  const handleBlogUpdate = async blogToUpdate => {
+    try {
+      const updatedBlog = await blogService.updateBlog(blogToUpdate);
+
+      setNotification({ message: `${updatedBlog.title} updated` });
+    } catch (exception) {
+      setNotification({ message: `Error updating`, type: 'error' });
+    } finally {
+      setTimeout(() => {
+        setNotification({ message: null });
+      }, 3000);
+    }
+  };
+
   const handleLogin = async event => {
     event.preventDefault();
     try {
@@ -93,7 +107,9 @@ function App() {
     // const usersBlog = blogs.filter(
     //   blog => blog.user.username === user.username
     // );
-    return blogs.map(blog => <Blog key={blog.id} blog={blog} />);
+    return blogs.map(blog => (
+      <Blog key={blog.id} blog={blog} updateBlog={handleBlogUpdate} />
+    ));
   };
 
   return (
