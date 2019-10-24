@@ -21,8 +21,10 @@ const Blog = ({ blog, updateBlog, deleteBlog, blogCreator }) => {
   };
 
   const enableRemoveIfCreator = () => {
+    let result = null;
+
     if (blogCreator) {
-      return (
+      result = (
         <div>
           <button
             onClick={() => {
@@ -38,7 +40,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, blogCreator }) => {
         </div>
       );
     }
-    return null;
+    return result;
   };
 
   enableRemoveIfCreator();

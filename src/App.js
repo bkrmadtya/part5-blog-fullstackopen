@@ -67,7 +67,7 @@ function App() {
 
       setNotification({ message: `${updatedBlog.title} updated` });
     } catch (exception) {
-      setNotification({ message: `Error updating`, type: 'error' });
+      setNotification({ message: 'Error updating', type: 'error' });
     } finally {
       setTimeout(() => {
         setNotification({ message: null });
@@ -82,7 +82,7 @@ function App() {
 
       setNotification({ message: `${blog.title} deleted` });
     } catch (exception) {
-      setNotification({ message: `Error updating`, type: 'error' });
+      setNotification({ message: 'Error updating', type: 'error' });
     } finally {
       setTimeout(() => {
         setNotification({ message: null });
