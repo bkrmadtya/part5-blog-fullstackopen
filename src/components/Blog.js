@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const Blog = ({ blog, updateBlog, deleteBlog, blogCreator }) => {
-  const [showDetails, setShowDetails] = useState(true);
+  const [showDetails, setShowDetails] = useState(false);
 
   const toggleDetails = () => {
     setShowDetails(!showDetails);
   };
 
   const blogStyle = {
-    border: '1px solid black',
+    border: "1px solid black",
     borderRadius: 5,
     // backgroundColor: '#ccc',
     padding: 10,
@@ -17,6 +17,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, blogCreator }) => {
 
   const likeBlog = () => {
     blog.likes++;
+
     updateBlog(blog);
   };
 
@@ -43,11 +44,9 @@ const Blog = ({ blog, updateBlog, deleteBlog, blogCreator }) => {
     return result;
   };
 
-  enableRemoveIfCreator();
-
   return (
-    <div style={blogStyle}>
-      <div onClick={toggleDetails}>
+    <div className="blogPost" style={blogStyle} onClick={toggleDetails}>
+      <div>
         {blog.title} {blog.author}
       </div>
       {showDetails && (

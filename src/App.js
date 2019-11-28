@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-import loginService from './services/login';
-import blogService from './services/blogs';
+import loginService from "./services/login";
+import blogService from "./services/blogs";
 
-import Notification from './components/Notification';
-import LoginForm from './components/LoginForm';
-import BlogForm from './components/BlogForm';
-import Blog from './components/Blog';
-import Toggleable from './components/Toggleable';
+import Notification from "./components/Notification";
+import LoginForm from "./components/LoginForm";
+import BlogForm from "./components/BlogForm";
+import Blog from "./components/Blog";
+import Toggleable from "./components/Toggleable";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState("");
   const [notification, setNotification] = useState({ message: null });
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
   const blogFormRef = React.createRef();
@@ -31,7 +31,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const loggedUserJson = window.localStorage.getItem('loggedBlogappUser');
+    const loggedUserJson = window.localStorage.getItem("loggedBlogappUser");
     if (loggedUserJson) {
       const user = JSON.parse(loggedUserJson);
       setUser(user);
@@ -49,11 +49,11 @@ function App() {
 
       setNotification({ message: `a new blog ${title} by ${author} added` });
 
-      setTitle('');
-      setAuthor('');
-      setUrl('');
+      setTitle("");
+      setAuthor("");
+      setUrl("");
     } catch (exception) {
-      setNotification({ message: 'Error creating new Blog', type: 'error' });
+      setNotification({ message: "Error creating new Blog", type: "error" });
     } finally {
       setTimeout(() => {
         setNotification({ message: null });
@@ -63,11 +63,12 @@ function App() {
 
   const handleBlogUpdate = async blogToUpdate => {
     try {
+      console.log(blogToUpdate);
       const updatedBlog = await blogService.updateBlog(blogToUpdate);
 
       setNotification({ message: `${updatedBlog.title} updated` });
     } catch (exception) {
-      setNotification({ message: 'Error updating', type: 'error' });
+      setNotification({ message: "Error updating", type: "error" });
     } finally {
       setTimeout(() => {
         setNotification({ message: null });
@@ -82,7 +83,7 @@ function App() {
 
       setNotification({ message: `${blog.title} deleted` });
     } catch (exception) {
-      setNotification({ message: 'Error updating', type: 'error' });
+      setNotification({ message: "Error updating", type: "error" });
     } finally {
       setTimeout(() => {
         setNotification({ message: null });
@@ -98,14 +99,14 @@ function App() {
         password
       });
 
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user));
+      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
 
-      setUsername('');
-      setPassword('');
+      setUsername("");
+      setPassword("");
     } catch (exception) {
-      setNotification({ message: 'Wrong credentials', type: 'error' });
+      setNotification({ message: "Wrong credentials", type: "error" });
     } finally {
       setTimeout(() => {
         setNotification({ message: null });
