@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 
 import SimpleBlog from "./SimpleBlog";
 
@@ -29,5 +29,13 @@ describe("<SimpleBlog />", () => {
   test("blog likes is displayed correct", () => {
     const result = "blog has " + sampleBlog.likes + " likes";
     expect(component.container).toHaveTextContent(result);
+  });
+
+  test("like button is called twice when event handler is called twice", () => {
+    const likeButton = component.getByText("like");
+    fireEvent.click(likeButton);
+    fireEvent.click(likeButton);
+
+    expect(mockHandler.mock.calls.length).toBe(2);
   });
 });
