@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
 const LoginForm = ({
   handleLogin,
@@ -19,8 +19,9 @@ const LoginForm = ({
   return (
     <form onSubmit={handleLogin}>
       <div>
-        username{' '}
+        username{" "}
         <input
+          placeholder="username"
           type="text"
           name="username"
           value={username}
@@ -28,8 +29,9 @@ const LoginForm = ({
         ></input>
       </div>
       <div>
-        password{' '}
+        password{" "}
         <input
+          placeholder="password"
           type="password"
           name="password"
           value={password}

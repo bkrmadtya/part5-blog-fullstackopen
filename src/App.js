@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import loginService from "./services/login";
-import blogService from "./services/blogs";
+import blogService from "./services/blogs.js";
 
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
@@ -132,7 +132,7 @@ function App() {
 
     return sortedBlog.map(blog => (
       <Blog
-        key={blog.id}
+        key={blog.id + blog.title}
         blog={blog}
         updateBlog={handleBlogUpdate}
         deleteBlog={handleDeleteBlog}
