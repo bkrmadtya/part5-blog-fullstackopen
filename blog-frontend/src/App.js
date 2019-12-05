@@ -1,23 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-import loginService from "./services/login";
-import blogService from "./services/blogs.js";
+import { useField } from './hooks';
 
-import Notification from "./components/Notification";
-import LoginForm from "./components/LoginForm";
-import BlogForm from "./components/BlogForm";
-import Blog from "./components/Blog";
-import Toggleable from "./components/Toggleable";
+import loginService from './services/login';
+import blogService from './services/blogs.js';
+
+import Notification from './components/Notification';
+import LoginForm from './components/LoginForm';
+import BlogForm from './components/BlogForm';
+import Blog from './components/Blog';
+import Toggleable from './components/Toggleable';
 
 function App() {
   const [blogs, setBlogs] = useState([]);
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
-  const [notification, setNotification] = useState({ message: null });
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [notification, setNotification] = useState({ message: null });
+  const title = useField('text');
+  const author = useField('text');
+  const url = useField('text');
+  const username = useField('text');
+  const password = useField('password');
 
   const blogFormRef = React.createRef();
 
@@ -31,7 +33,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const loggedUserJson = window.localStorage.getItem("loggedBlogappUser");
+    const loggedUserJson = window.localStorage.getItem('loggedBlogappUser');
     if (loggedUserJson) {
       const user = JSON.parse(loggedUserJson);
       setUser(user);
@@ -44,16 +46,22 @@ function App() {
     blogFormRef.current.toggleVisibility();
 
     try {
-      await blogService.createBlog({ title, author, url });
+      await blogService.createBlog({
+        title: title.value,
+        author: author.value,
+        url: url.value
+      });
+
       fetchBlogs();
+      setNotification({
+        message: `a new blog ${title.value} by ${author.value} added`
+      });
 
-      setNotification({ message: `a new blog ${title} by ${author} added` });
-
-      setTitle("");
-      setAuthor("");
-      setUrl("");
+      title.reset('');
+      author.reset('');
+      url.reset('');
     } catch (exception) {
-      setNotification({ message: "Error creating new Blog", type: "error" });
+      setNotification({ message: 'Error creating new Blog', type: 'error' });
     } finally {
       setTimeout(() => {
         setNotification({ message: null });
@@ -68,7 +76,7 @@ function App() {
 
       setNotification({ message: `${updatedBlog.title} updated` });
     } catch (exception) {
-      setNotification({ message: "Error updating", type: "error" });
+      setNotification({ message: 'Error updating', type: 'error' });
     } finally {
       setTimeout(() => {
         setNotification({ message: null });
@@ -83,7 +91,7 @@ function App() {
 
       setNotification({ message: `${blog.title} deleted` });
     } catch (exception) {
-      setNotification({ message: "Error updating", type: "error" });
+      setNotification({ message: 'Error updating', type: 'error' });
     } finally {
       setTimeout(() => {
         setNotification({ message: null });
@@ -95,18 +103,18 @@ function App() {
     event.preventDefault();
     try {
       const user = await loginService.login({
-        username,
-        password
+        username: username.value,
+        password: password.value
       });
 
-      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
 
-      setUsername("");
-      setPassword("");
+      username.reset('');
+      password.reset('');
     } catch (exception) {
-      setNotification({ message: "Wrong credentials", type: "error" });
+      setNotification({ message: 'Wrong credentials', type: 'error' });
     } finally {
       setTimeout(() => {
         setNotification({ message: null });
@@ -154,8 +162,6 @@ function App() {
             handleLogin={handleLogin}
             username={username}
             password={password}
-            handleUsernameChange={value => setUsername(value)}
-            handlePasswordChange={value => setPassword(value)}
           />
         </div>
       ) : (
@@ -171,9 +177,6 @@ function App() {
               title={title}
               author={author}
               url={url}
-              handleTitleChange={value => setTitle(value)}
-              handleAuthorChange={value => setAuthor(value)}
-              handleUrlChange={value => setUrl(value)}
             />
           </Toggleable>
 
