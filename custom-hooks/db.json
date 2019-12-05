@@ -7,6 +7,18 @@
     {
       "content": "best feature ever <3",
       "id": 2
+    },
+    {
+      "content": "hi",
+      "id": 3
+    },
+    {
+      "content": "hello",
+      "id": 4
+    },
+    {
+      "content": "nice to meet you",
+      "id": 5
     }
   ],
   "persons": [
@@ -14,6 +26,11 @@
       "name": "mluukkai",
       "number": "040-5483923",
       "id": 1
+    },
+    {
+      "name": "hellas",
+      "number": "012-123123",
+      "id": 2
     }
   ]
 }
