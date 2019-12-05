@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 const Blog = ({ blog, updateBlog, deleteBlog, blogCreator }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -8,14 +8,15 @@ const Blog = ({ blog, updateBlog, deleteBlog, blogCreator }) => {
   };
 
   const blogStyle = {
-    border: "1px solid black",
+    border: '1px solid black',
     borderRadius: 5,
     // backgroundColor: '#ccc',
     padding: 10,
     marginTop: 5
   };
 
-  const likeBlog = () => {
+  const likeBlog = e => {
+    e.stopPropagation();
     blog.likes++;
 
     updateBlog(blog);
@@ -58,7 +59,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, blogCreator }) => {
           </div>
           <div>
             {blog.likes} likes
-            <button onClick={likeBlog}>like</button>
+            <button onClick={e => likeBlog(e)}>like</button>
           </div>
           <div>added by {blog.user.username}</div>
           {enableRemoveIfCreator()}
